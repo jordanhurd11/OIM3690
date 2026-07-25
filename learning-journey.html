@@ -22,6 +22,7 @@
       --accent-3: #ff7ab8;
       --glow: rgba(139, 123, 255, 0.35);
       --radius: 18px;
+      --mono: ui-monospace, "Cascadia Code", "Segoe UI Mono", Consolas, monospace;
     }
 
     html { scroll-behavior: smooth; }
@@ -46,7 +47,91 @@
         linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
     }
 
+    /* Slow-drifting aurora blobs */
+    .aurora {
+      position: fixed;
+      width: 540px;
+      height: 540px;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.4;
+      z-index: -1;
+      pointer-events: none;
+    }
+    .aurora.a1 {
+      top: -180px; left: -140px;
+      background: radial-gradient(circle, rgba(139, 123, 255, 0.5), transparent 70%);
+      animation: drift1 26s ease-in-out infinite alternate;
+    }
+    .aurora.a2 {
+      bottom: -200px; right: -160px;
+      background: radial-gradient(circle, rgba(63, 208, 201, 0.4), transparent 70%);
+      animation: drift2 32s ease-in-out infinite alternate;
+    }
+    @keyframes drift1 { from { transform: translate(0, 0) scale(1); } to { transform: translate(130px, 90px) scale(1.15); } }
+    @keyframes drift2 { from { transform: translate(0, 0) scale(1.1); } to { transform: translate(-110px, -80px) scale(0.95); } }
+
+    /* Faint tech grid fading out from the top */
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(139, 123, 255, 0.055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(139, 123, 255, 0.055) 1px, transparent 1px);
+      background-size: 44px 44px;
+      -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 25%, transparent 75%);
+      mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 25%, transparent 75%);
+    }
+
+    /* Soft glow that follows the cursor */
+    .spotlight {
+      position: fixed;
+      left: 50%;
+      top: 30%;
+      width: 720px;
+      height: 720px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(139, 123, 255, 0.08), transparent 65%);
+      transform: translate(-50%, -50%);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* Scroll progress bar */
+    #scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 2px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3));
+      box-shadow: 0 0 12px var(--glow);
+      z-index: 200;
+    }
+
+    /* Themed scrollbar */
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, rgba(139, 123, 255, 0.55), rgba(63, 208, 201, 0.55));
+      border-radius: 999px;
+      border: 2px solid var(--bg);
+    }
+
     ::selection { background: rgba(139, 123, 255, 0.4); }
+
+    /* Terminal-style labels */
+    .kicker, .section-tag, .tl-week, .tl-date, .skill-week, .badge, .when, .strip-caption, .scroll-hint {
+      font-family: var(--mono);
+    }
+    .section-tag::before { content: "// "; opacity: 0.6; }
+
+    /* Inner top highlight on all glass surfaces */
+    .tl-card, .skill, .project, .stat, .ba-col, .reflection-card {
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+    }
 
     /* ============ NAV ============ */
     nav {
@@ -227,6 +312,11 @@
       transition: background 0.3s, transform 0.3s;
     }
     .tl-entry.open::before { background: var(--accent); transform: scale(1.2); }
+    @keyframes dotPulse {
+      0%, 100% { box-shadow: 0 0 0 4px rgba(139, 123, 255, 0.15), 0 0 14px var(--glow); }
+      50% { box-shadow: 0 0 0 8px rgba(139, 123, 255, 0.07), 0 0 22px var(--glow); }
+    }
+    .tl-entry::before { animation: dotPulse 3s ease-in-out infinite; }
 
     .tl-card {
       background: var(--card);
@@ -385,6 +475,19 @@
       box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(139, 123, 255, 0.14);
     }
     .project:hover::before { opacity: 1; }
+    .project::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -80%;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.07), transparent);
+      transform: skewX(-20deg);
+      transition: left 0.6s ease;
+      pointer-events: none;
+    }
+    .project:hover::after { left: 130%; }
 
     .project .badge {
       align-self: flex-start;
@@ -502,7 +605,12 @@
 </head>
 <body>
 
+  <div id="scroll-progress" aria-hidden="true"></div>
   <div class="bg-glow" aria-hidden="true"></div>
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="aurora a1" aria-hidden="true"></div>
+  <div class="aurora a2" aria-hidden="true"></div>
+  <div class="spotlight" aria-hidden="true"></div>
 
   <nav aria-label="Page navigation">
     <a href="#top" class="active">Top</a>
@@ -878,7 +986,7 @@
         <h3>Week 10 Me</h3>
         <p class="when">July 2026</p>
         <ul>
-          <li>Writes <strong>proposals</strong> and has AI turn them into PRDs and phased plans</li>
+          <li>Combines <strong>HTML, CSS, JavaScript, and live APIs</strong> in a single website</li>
           <li>Catches AI's bugs: typos, race conditions, retired model names, UTC shifts</li>
           <li>Architects <strong>multi-page apps</strong> with shared state and multiple APIs</li>
           <li>Checks AI's math and cross-tests different models on the same code</li>
@@ -921,8 +1029,8 @@
         right that my first idea wasn't unique, and the project got better because I acted on it instead of
         defending it. Shipping the final project showed me how much of real development lives in the details
         users never notice until they break: error states, rate limits, key security, time zones. Ten weeks
-        ago I couldn't have told you what a meta tag was. Now I want to build systems where multiple AIs
-        check each other's work. That gap is the journey.
+        ago I couldn't have told you what a meta tag was. Now I want to build websites and apps that real
+        users actually use — and that I can turn into something I monetize. That gap is the journey.
       </p>
       <p class="sig">Jordan Hurd <span>OIM3690 · Web Technologies · Summer 2026 · Babson College</span></p>
     </div>
@@ -975,6 +1083,22 @@
       requestAnimationFrame(tick);
     }
     document.querySelectorAll('.stat .num').forEach(animateCount);
+
+    // ---------- Scroll progress bar ----------
+    const progressBar = document.getElementById('scroll-progress');
+    window.addEventListener('scroll', () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      progressBar.style.width = (max > 0 ? (window.scrollY / max) * 100 : 0) + '%';
+    }, { passive: true });
+
+    // ---------- Cursor spotlight (mouse devices only) ----------
+    const spotlight = document.querySelector('.spotlight');
+    if (window.matchMedia('(pointer: fine)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      window.addEventListener('pointermove', (e) => {
+        spotlight.style.left = e.clientX + 'px';
+        spotlight.style.top = e.clientY + 'px';
+      }, { passive: true });
+    }
 
     // ---------- Active nav link on scroll ----------
     const navLinks = document.querySelectorAll('nav a');
