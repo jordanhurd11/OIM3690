@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Learning Journey - Jordan Hurd</title>
+  <meta name="description" content="Jordan Hurd's 10-week learning journey through OIM3690 Web Technologies at Babson College.">
+  <style>
+    /* ============ RESET & TOKENS ============ */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #070b16;
+      --bg-2: #0b1224;
+      --card: rgba(255, 255, 255, 0.05);
+      --card-border: rgba(255, 255, 255, 0.10);
+      --card-hover: rgba(255, 255, 255, 0.09);
+      --text: #e8ecf8;
+      --muted: #9aa5c1;
+      --accent: #8b7bff;
+      --accent-2: #3fd0c9;
+      --accent-3: #ff7ab8;
+      --glow: rgba(139, 123, 255, 0.35);
+      --radius: 18px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "Segoe UI Variable Display", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+
+    /* Ambient background glows */
+    .bg-glow {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(600px 400px at 15% 10%, rgba(139, 123, 255, 0.16), transparent 60%),
+        radial-gradient(700px 500px at 85% 25%, rgba(63, 208, 201, 0.10), transparent 60%),
+        radial-gradient(700px 600px at 50% 95%, rgba(255, 122, 184, 0.08), transparent 60%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+    }
+
+    ::selection { background: rgba(139, 123, 255, 0.4); }
+
+    /* ============ NAV ============ */
+    nav {
+      position: fixed;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      display: flex;
+      gap: 4px;
+      padding: 6px;
+      border-radius: 999px;
+      background: rgba(10, 14, 28, 0.72);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+      max-width: calc(100vw - 24px);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    nav::-webkit-scrollbar { display: none; }
+
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      padding: 8px 14px;
+      border-radius: 999px;
+      white-space: nowrap;
+      transition: color 0.25s, background 0.25s;
+    }
+    nav a:hover { color: var(--text); background: rgba(255, 255, 255, 0.07); }
+    nav a.active { color: #fff; background: linear-gradient(135deg, rgba(139,123,255,0.35), rgba(63,208,201,0.25)); }
+
+    /* ============ LAYOUT ============ */
+    section { max-width: 1060px; margin: 0 auto; padding: 90px 22px; }
+
+    .section-tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent-2);
+      margin-bottom: 12px;
+    }
+
+    h2.section-title {
+      font-size: clamp(1.7rem, 4vw, 2.5rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 14px;
+    }
+
+    .section-intro { color: var(--muted); max-width: 640px; margin-bottom: 44px; }
+
+    /* ============ HERO ============ */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 120px 22px 60px;
+    }
+
+    .hero .kicker {
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent-2);
+      margin-bottom: 18px;
+      animation: fadeUp 0.9s ease both;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.6rem, 8vw, 5rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.08;
+      background: linear-gradient(100deg, #ffffff 20%, var(--accent) 55%, var(--accent-2) 90%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: fadeUp 0.9s 0.12s ease both;
+    }
+
+    .hero .sub {
+      margin-top: 22px;
+      max-width: 620px;
+      color: var(--muted);
+      font-size: 1.06rem;
+      animation: fadeUp 0.9s 0.24s ease both;
+    }
+
+    .hero-stats {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+      margin-top: 44px;
+      animation: fadeUp 0.9s 0.36s ease both;
+    }
+
+    .stat {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 18px 26px;
+      min-width: 130px;
+      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+    }
+    .stat:hover {
+      transform: translateY(-4px);
+      border-color: rgba(139, 123, 255, 0.45);
+      box-shadow: 0 12px 34px var(--glow);
+    }
+    .stat .num {
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .stat .label { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
+
+    .scroll-hint {
+      margin-top: 64px;
+      color: var(--muted);
+      font-size: 0.8rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      animation: fadeUp 0.9s 0.5s ease both, bob 2.2s 1.5s ease-in-out infinite;
+    }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(7px); } }
+
+    /* ============ SCROLL REVEAL ============ */
+    .reveal { opacity: 0; transform: translateY(34px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ============ TIMELINE ============ */
+    .timeline { position: relative; padding-left: 34px; }
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 9px;
+      top: 6px;
+      bottom: 6px;
+      width: 2px;
+      background: linear-gradient(180deg, var(--accent), var(--accent-2), var(--accent-3));
+      opacity: 0.55;
+      border-radius: 2px;
+    }
+
+    .tl-entry { position: relative; margin-bottom: 18px; }
+
+    .tl-entry::before {
+      content: "";
+      position: absolute;
+      left: -32px;
+      top: 26px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 2px solid var(--accent);
+      box-shadow: 0 0 0 4px rgba(139, 123, 255, 0.15), 0 0 14px var(--glow);
+      transition: background 0.3s, transform 0.3s;
+    }
+    .tl-entry.open::before { background: var(--accent); transform: scale(1.2); }
+
+    .tl-card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      overflow: hidden;
+      transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+    }
+    .tl-entry:hover .tl-card {
+      border-color: rgba(139, 123, 255, 0.4);
+      box-shadow: 0 10px 34px rgba(0, 0, 0, 0.35), 0 0 24px rgba(139, 123, 255, 0.12);
+      transform: translateX(4px);
+    }
+
+    .tl-head {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 20px;
+      background: none;
+      border: none;
+      color: inherit;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .tl-week {
+      flex-shrink: 0;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: #fff;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      padding: 5px 11px;
+      border-radius: 999px;
+      box-shadow: 0 0 16px rgba(139, 123, 255, 0.35);
+    }
+
+    .tl-title { font-weight: 700; font-size: 1.02rem; flex: 1; }
+    .tl-date { color: var(--muted); font-size: 0.78rem; flex-shrink: 0; }
+
+    .tl-chevron {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      color: var(--muted);
+      transition: transform 0.35s;
+    }
+    .tl-entry.open .tl-chevron { transform: rotate(180deg); color: var(--accent-2); }
+
+    .tl-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.45s ease;
+    }
+    .tl-body-inner { padding: 0 20px 20px; color: var(--muted); font-size: 0.94rem; }
+    .tl-body-inner p { margin-bottom: 10px; }
+    .tl-body-inner strong { color: var(--text); }
+    .tl-body-inner .takeaway {
+      margin-top: 8px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--accent-2);
+      background: rgba(63, 208, 201, 0.06);
+      border-radius: 0 10px 10px 0;
+      font-style: italic;
+    }
+
+    /* ============ SKILLS ============ */
+    .skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    .skill {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 20px 22px;
+      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+    }
+    .skill:hover {
+      transform: translateY(-4px);
+      border-color: rgba(63, 208, 201, 0.4);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35), 0 0 22px rgba(63, 208, 201, 0.12);
+    }
+
+    .skill-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+    .skill-name { font-weight: 700; font-size: 0.96rem; }
+    .skill-week { font-size: 0.72rem; color: var(--accent-2); font-weight: 700; letter-spacing: 0.05em; }
+    .skill-desc { font-size: 0.83rem; color: var(--muted); margin-bottom: 14px; min-height: 42px; }
+
+    .bar-track {
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      width: 0;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      box-shadow: 0 0 12px var(--glow);
+      transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* ============ PROJECTS ============ */
+    .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 18px; }
+
+    .project {
+      display: flex;
+      flex-direction: column;
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+    }
+    .project::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .project:hover {
+      transform: translateY(-6px);
+      border-color: rgba(139, 123, 255, 0.45);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(139, 123, 255, 0.14);
+    }
+    .project:hover::before { opacity: 1; }
+
+    .project .badge {
+      align-self: flex-start;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent-2);
+      border: 1px solid rgba(63, 208, 201, 0.35);
+      background: rgba(63, 208, 201, 0.08);
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 14px;
+    }
+    .project h3 { font-size: 1.15rem; font-weight: 800; margin-bottom: 8px; }
+    .project p { color: var(--muted); font-size: 0.88rem; margin-bottom: 14px; }
+    .project ul { list-style: none; margin-bottom: 16px; }
+    .project li {
+      font-size: 0.83rem;
+      color: var(--muted);
+      padding-left: 20px;
+      position: relative;
+      margin-bottom: 6px;
+    }
+    .project li::before { content: "▸"; position: absolute; left: 4px; color: var(--accent); }
+    .project a {
+      margin-top: auto;
+      align-self: flex-start;
+      color: var(--accent-2);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 700;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.25s;
+    }
+    .project a:hover { border-color: var(--accent-2); }
+
+    /* ============ BEFORE / AFTER ============ */
+    .ba-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+
+    .ba-col {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 28px;
+    }
+    .ba-col.before { border-top: 3px solid var(--accent-3); }
+    .ba-col.after { border-top: 3px solid var(--accent-2); }
+
+    .ba-col h3 { font-size: 1.05rem; font-weight: 800; margin-bottom: 4px; }
+    .ba-col .when { font-size: 0.75rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; margin-bottom: 18px; }
+    .ba-col ul { list-style: none; }
+    .ba-col li {
+      font-size: 0.9rem;
+      color: var(--muted);
+      padding: 10px 0 10px 26px;
+      position: relative;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .ba-col li:last-child { border-bottom: none; }
+    .ba-col.before li::before { content: "○"; position: absolute; left: 2px; color: var(--accent-3); }
+    .ba-col.after li::before { content: "●"; position: absolute; left: 2px; color: var(--accent-2); }
+    .ba-col li strong { color: var(--text); }
+
+    .quote-shift {
+      margin-top: 22px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 16px;
+      align-items: center;
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 26px;
+    }
+    .quote-shift blockquote { font-size: 0.92rem; color: var(--muted); font-style: italic; }
+    .quote-shift blockquote span { display: block; margin-top: 8px; font-style: normal; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; color: var(--accent); }
+    .quote-shift .arrow { font-size: 1.6rem; color: var(--accent-2); text-shadow: 0 0 14px rgba(63, 208, 201, 0.5); }
+
+    /* ============ REFLECTION ============ */
+    .reflection-card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      padding: clamp(26px, 5vw, 52px);
+      position: relative;
+      overflow: hidden;
+    }
+    .reflection-card::before {
+      content: "";
+      position: absolute;
+      top: -120px; right: -120px;
+      width: 300px; height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(139, 123, 255, 0.18), transparent 70%);
+      pointer-events: none;
+    }
+    .reflection-card p { color: var(--muted); margin-bottom: 18px; font-size: 1rem; }
+    .reflection-card p:last-child { margin-bottom: 0; }
+    .reflection-card strong { color: var(--text); }
+    .reflection-card .sig { margin-top: 26px; font-weight: 800; font-size: 1.05rem; color: var(--text); }
+    .reflection-card .sig span { display: block; font-weight: 600; font-size: 0.8rem; color: var(--accent-2); }
+
+    footer {
+      text-align: center;
+      padding: 40px 20px 50px;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    /* ============ RESPONSIVE ============ */
+    @media (max-width: 760px) {
+      section { padding: 64px 16px; }
+      .skills-grid, .ba-grid { grid-template-columns: 1fr; }
+      .quote-shift { grid-template-columns: 1fr; text-align: center; }
+      .quote-shift .arrow { transform: rotate(90deg); }
+      .tl-head { flex-wrap: wrap; }
+      .tl-date { order: 3; width: 100%; padding-left: 0; }
+      .skill-desc { min-height: 0; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-glow" aria-hidden="true"></div>
+
+  <nav aria-label="Page navigation">
+    <a href="#top" class="active">Top</a>
+    <a href="#timeline">Timeline</a>
+    <a href="#skills">Skills</a>
+    <a href="#projects">Projects</a>
+    <a href="#growth">Growth</a>
+    <a href="#reflection">Reflection</a>
+  </nav>
+
+  <!-- ============ HERO ============ -->
+  <header class="hero" id="top">
+    <p class="kicker">OIM3690 · Web Technologies · Babson College</p>
+    <h1>My Learning Journey</h1>
+    <p class="sub">
+      Ten weeks ago I asked AI what a <code>&lt;meta&gt;</code> tag was. Last week I was wiring
+      multiple live APIs into one dashboard and rewriting the AI's own code when it broke.
+      This is the story of how that happened, pulled straight from my weekly logs.
+    </p>
+    <div class="hero-stats">
+      <div class="stat"><div class="num" data-count="10">0</div><div class="label">Weeks Logged</div></div>
+      <div class="stat"><div class="num" data-count="5">0</div><div class="label">Projects Built</div></div>
+      <div class="stat"><div class="num" data-count="27">0</div><div class="label">AI Interactions Logged</div></div>
+      <div class="stat"><div class="num" data-count="1">0</div><div class="label">Big Pivot</div></div>
+    </div>
+    <div class="scroll-hint">↓ Scroll to begin</div>
+  </header>
+
+  <!-- ============ TIMELINE ============ -->
+  <section id="timeline">
+    <p class="section-tag reveal">Week by Week</p>
+    <h2 class="section-title reveal">The Timeline</h2>
+    <p class="section-intro reveal">
+      Every entry below comes from my actual weekly logs. Click any week to expand what really happened.
+    </p>
+
+    <div class="timeline">
+
+      <div class="tl-entry reveal">
+        <div class="tl-card">
+          <button class="tl-head" aria-expanded="false">
+            <span class="tl-week">WK 1</span>
+            <span class="tl-title">My first website ever</span>
+            <span class="tl-date">May 20</span>
+            <svg class="tl-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="tl-body"><div class="tl-body-inner">
+            <p>I built my personal website with help from AI and learned the absolute basics: creating a repository, committing to main, pushing to origin, and publishing a page. My questions that week say it all — <em>"What does meta mean? What does charset UTF-8 mean? What does rem mean?"</em></p>
+            <p>My "what I kept / changed / rejected" note for the first AI interaction was two words: <strong>"Kept everything."</strong></p>
+            <p class="takeaway">I didn't know enough yet to question anything the AI gave me — and honestly, I didn't try.</p>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="tl-entry reveal">
+        <div class="tl-card">
+          <button class="tl-head" aria-expanded="false">
+            <span class="tl-week">WK 2</span>
+            <span class="tl-title">First time pushing back on AI</span>
+            <span class="tl-date">May 27</span>
+            <svg class="tl-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="tl-body"><div class="tl-body-inner">
+            <p>I created <strong>hello.html</strong> and <strong>about-me.html</strong> and learned to add images, links, semantic structure, and proper heading hierarchy.</p>
+            <p>This was the first week I didn't just accept AI's output. It gave me a page built out of generic containers, and I rewrote it with semantic structure and a real heading hierarchy. I even reused my own code from hello.html to add an image instead of copying the AI's template.</p>
+            <p class="takeaway">Small moment, but it was the first time I changed the AI's code because I knew a better way.</p>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="tl-entry reveal">
+        <div class="tl-card">
+          <button class="tl-head" aria-expanded="false">
+            <span class="tl-week">WK 3</span>
+            <span class="tl-title">Mini Project 1 begins: FuelPrep</span>
+            <span class="tl-date">Jun 1</span>
+            <svg class="tl-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="tl-body"><div class="tl-body-inner">
+            <p>I turned a full client brief into a landing page for <strong>FuelPrep</strong>, a budget-friendly meal prep site for college students. First time splitting code into a separate index.html and styles.css instead of one giant file.</p>
+            <p>I fed the AI the entire brief — audience, pages, style preferences — and it produced the whole site. My note that week was still <strong>"kept all code."</strong> The specificity of my prompts was growing faster than my ability to edit the results.</p>
+            <p class="takeaway">I was learning to communicate requirements before I could write the code myself.</p>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="tl-entry reveal">
+        <div class="tl-card">
+          <button class="tl-head" aria-expanded="false">
+            <span class="tl-week">WK 4</span>
+            <span class="tl-title">Writing my first PRD</span>
+            <span class="tl-date">Jun 8</span>
+            <svg class="tl-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="tl-body"><div class="tl-body-inner">
+            <p>I wrote a full <strong>Product Requirements Document</strong> for FuelPrep — vision, audience, page structure, color palette, typography, brand voice — and had AI rebuild the site from it. The form started saving user inputs to <strong>localStorage</strong>, the site grew to three pages with consistent navigation, and we did a full semantic HTML and accessibility pass with screen-reader labels and landmarks.</p>
+            <p>I also shipped the small stuff that makes a site feel real: a custom SVG favicon, Open Graph tags for social previews, and a fix for the mobile hamburger that wasn't hugging the right edge of the screen.</p>
+            <p class="takeaway">Planning first, then building, produced a far better site than prompting one change at a time.</p>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="tl-entry reveal">
+        <div class="tl-card">
+          <button class="tl-head" aria-expanded="false">
+            <span class="tl-week">WK 5</span>
+            <span class="tl-title">JavaScript begins — and my first real bug</span>
+            <span class="tl-date">Jun 15</span>
+            <svg class="tl-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="tl-body"><div class="tl-body-inner">
+            <p>I presented MP1 to the class, then dove into JavaScript: <code>querySelector</code>, <code>addEventListener</code>, and how HTML, CSS, and JS each play a different role. I also learned to spot the "generic AI look" — endless cards, big rounded corners, default fonts — and that naming exact fonts, colors, and styles gets personalized results.</p>
+            <p>Then I proposed <strong>Mini Project 2: a workout tracker</strong>, and my prompts got serious — set-by-set logging, a radar chart drawn with the vanilla Canvas API (no Chart.js allowed), estimated one-rep-max math spelled out formula by formula.</p>
+            <p>The AI's first version had a bug: <strong>workouts weren't actually saving when submitted.</strong> I had to go into the code and fix it myself.</p>
+            <p class="takeaway">That bug was the moment AI stopped being magic. It writes code; I'm responsible for whether it works.</p>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="tl-entry reveal">
+        <div class="tl-card">
+          <button class="tl-head" aria-expanded="false">
+            <span class="tl-week">WK 6</span>
+            <span class="tl-title">The week state finally clicked</span>
+            <span class="tl-date">Jun 22</span>
+            <svg class="tl-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="tl-body"><div class="tl-body-inner">
+            <p>The biggest mental shift of the semester. I wrote in my log: a website is <em>"a system that holds data, transforms it, and redraws itself whenever something changes."</em> When I save a workout, the stats update, the chart redraws, the calendar recolors, and the radar chart shifts — all from one state change.</p>
+            <p>The tracker grew into a real app: a dashboard with sidebar navigation, a calendar with color-coded planned workouts, an achievements page with Epley-formula personal records, and research-based weekly volume targets per muscle group.</p>
+            <p>I also started making my own architecture calls — I split each page into its own HTML file for better organization and linked the dashboard calendar with the calendar page myself.</p>
+            <p class="takeaway">I stopped thinking in pages and started thinking in features and data.</p>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="tl-entry reveal">
+        <div class="tl-card">
+          <button class="tl-head" aria-expanded="false">
+            <span class="tl-week">WK 7</span>
+            <span class="tl-title">APIs, async, and fixing AI's typos</span>
+            <span class="tl-date">Jun 29</span>
+            <svg class="tl-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="tl-body"><div class="tl-body-inner">
+            <p>Three small builds: <strong>playlist.html</strong> (rendering a page from an array of data), <strong>fetch-fun.html</strong> (an async function fetching random dog images from an API), and <strong>post-message.html</strong> (sending POST requests with custom headers and a JSON body).</p>
+            <p>I learned the difference between GET and POST, the three kinds of loops, and a habit that stuck: paste the API URL into the browser and read the raw JSON <em>before</em> writing any code.</p>
+            <p>When AI extended my playlist, I caught its mistakes — a typo (<code>escapHTML</code> instead of <code>escapeHTML</code>) and blocking <code>alert()</code>/<code>confirm()</code> dialogs, which I removed for a smoother experience.</p>
+            <p class="takeaway">I was now reviewing AI code the way you'd review a classmate's — trust, but verify.</p>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="tl-entry reveal">
+        <div class="tl-card">
+          <button class="tl-head" aria-expanded="false">
+            <span class="tl-week">WK 8</span>
+            <span class="tl-title">Real APIs are messy: the Golf Course Finder</span>
+            <span class="tl-date">Jul 6</span>
+            <svg class="tl-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="tl-body"><div class="tl-body-inner">
+            <p><strong>Mini Project 3</strong>: a golf course finder built on the Overpass API. The data was inconsistent — some courses had one field, others had twenty — and the API used POST with its own query language instead of normal GET parameters.</p>
+            <p>Across three iterations I chained geocoding into course search, added favorites, distance sorting, and a "near me" feature, and handled edge cases I'd never thought about before: rate limits (a real HTTP 429 mid-testing), server errors, denied geolocation, and even a race condition where a slow old search could overwrite a newer one — solved by stamping each request with an ID.</p>
+            <p>I also learned API keys are like passwords: hide them in a gitignored config file, run <code>git status</code> before every push, and know that only a backend like Vercel truly protects them.</p>
+            <p class="takeaway">Edge cases are where real apps live. The happy path is the easy part.</p>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="tl-entry reveal">
+        <div class="tl-card">
+          <button class="tl-head" aria-expanded="false">
+            <span class="tl-week">WK 9</span>
+            <span class="tl-title">The pivot</span>
+            <span class="tl-date">Jul 13</span>
+            <svg class="tl-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="tl-body"><div class="tl-body-inner">
+            <p>Peer review told me my final project idea — a meal prep generator — was too close to projects already presented. So I pivoted to something more unique: a <strong>sports betting analyzer</strong>. I had Claude write a PRD, split the build into phases, and learned that stating what a project will <em>NOT</em> do is how you stop scope creep.</p>
+            <p>I fixed two subtle bugs myself this week: a CSS specificity issue where <code>display: grid</code> was overriding the browser's built-in <code>[hidden]</code> style, and a color collision where two teams with the same colors became unreadable — I added a color-distance check that switches the away team to white.</p>
+            <p class="takeaway">Killing an idea I liked was hard, but the feedback was right — and the new project was better.</p>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="tl-entry reveal">
+        <div class="tl-card">
+          <button class="tl-head" aria-expanded="false">
+            <span class="tl-week">WK 10</span>
+            <span class="tl-title">Shipping the final project</span>
+            <span class="tl-date">Jul 20</span>
+            <svg class="tl-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="tl-body"><div class="tl-body-inner">
+            <p>Phases 3 through 7 of the sports analyst: live data from multiple APIs (balldontlie for MLB/NBA/NFL/EPL, ESPN for NHL), a Gemini-powered AI analyst, a bet tracker with a clickable bet slip, team stats (injuries, streaks, home/away records), and betting trends with starting vs. live odds.</p>
+            <p>Best debugging story of the semester: the AI assistant showed "offline" even though my key was fine — Google had <strong>retired the model name</strong> the AI had coded. I rewrote the proxy to try a chain of model names and remember which one works. I also fixed a UTC date bug that was showing yesterday's games as today's.</p>
+            <p>By now I was checking the AI's math, having different AI models review each other's code, and asking questions about monetization and multi-model voting systems.</p>
+            <p class="takeaway">Ten weeks in, AI is a power tool I direct — not a vending machine I wait on.</p>
+          </div></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ SKILLS ============ -->
+  <section id="skills">
+    <p class="section-tag reveal">Skill Map</p>
+    <h2 class="section-title reveal">What I Can Do Now</h2>
+    <p class="section-intro reveal">
+      Each skill is tagged with the week it entered my logs. The bars fill to where I honestly feel I am today.
+    </p>
+
+    <div class="skills-grid">
+      <div class="skill reveal">
+        <div class="skill-top"><span class="skill-name">HTML &amp; Semantic Structure</span><span class="skill-week">WK 1–2</span></div>
+        <p class="skill-desc">From asking what a meta tag was to running full semantic and accessibility passes with landmarks and aria labels.</p>
+        <div class="bar-track"><div class="bar-fill" data-fill="85"></div></div>
+      </div>
+      <div class="skill reveal">
+        <div class="skill-top"><span class="skill-name">CSS &amp; Responsive Design</span><span class="skill-week">WK 3–4</span></div>
+        <p class="skill-desc">Grid, flexbox, media queries, design systems from my own PRDs — and spotting the "generic AI look."</p>
+        <div class="bar-track"><div class="bar-fill" data-fill="80"></div></div>
+      </div>
+      <div class="skill reveal">
+        <div class="skill-top"><span class="skill-name">JavaScript &amp; the DOM</span><span class="skill-week">WK 5</span></div>
+        <p class="skill-desc">Selecting elements, event listeners, dynamic rendering, and translating real-world formulas into functions.</p>
+        <div class="bar-track"><div class="bar-fill" data-fill="75"></div></div>
+      </div>
+      <div class="skill reveal">
+        <div class="skill-top"><span class="skill-name">State &amp; localStorage</span><span class="skill-week">WK 5–6</span></div>
+        <p class="skill-desc">Structured data that survives refresh, sessionStorage between pages, and one state change redrawing the whole app.</p>
+        <div class="bar-track"><div class="bar-fill" data-fill="80"></div></div>
+      </div>
+      <div class="skill reveal">
+        <div class="skill-top"><span class="skill-name">Canvas &amp; Custom Charts</span><span class="skill-week">WK 5–6</span></div>
+        <p class="skill-desc">A radar chart and progress graphs drawn from scratch with the Canvas API — no charting libraries allowed.</p>
+        <div class="bar-track"><div class="bar-fill" data-fill="65"></div></div>
+      </div>
+      <div class="skill reveal">
+        <div class="skill-top"><span class="skill-name">APIs &amp; Async JavaScript</span><span class="skill-week">WK 7–8</span></div>
+        <p class="skill-desc">fetch, async/await, GET vs. POST, reading raw JSON first, and juggling multiple live APIs in one app.</p>
+        <div class="bar-track"><div class="bar-fill" data-fill="75"></div></div>
+      </div>
+      <div class="skill reveal">
+        <div class="skill-top"><span class="skill-name">Debugging</span><span class="skill-week">WK 5–10</span></div>
+        <p class="skill-desc">Console tracing, CSS specificity fights, race conditions, UTC date shifts, and a retired AI model name.</p>
+        <div class="bar-track"><div class="bar-fill" data-fill="78"></div></div>
+      </div>
+      <div class="skill reveal">
+        <div class="skill-top"><span class="skill-name">Working with AI</span><span class="skill-week">WK 1–10</span></div>
+        <p class="skill-desc">From "kept everything" to writing PRDs, catching AI's bugs and typos, checking its math, and cross-testing models.</p>
+        <div class="bar-track"><div class="bar-fill" data-fill="90"></div></div>
+      </div>
+      <div class="skill reveal">
+        <div class="skill-top"><span class="skill-name">Deployment &amp; Key Security</span><span class="skill-week">WK 8–10</span></div>
+        <p class="skill-desc">GitHub Pages, Vercel for hiding API keys, gitignored configs, and git status before every single push.</p>
+        <div class="bar-track"><div class="bar-fill" data-fill="70"></div></div>
+      </div>
+      <div class="skill reveal">
+        <div class="skill-top"><span class="skill-name">Product Thinking</span><span class="skill-week">WK 4–9</span></div>
+        <p class="skill-desc">Client briefs, PRDs, phased builds, scope management, and pivoting when peer feedback said the idea wasn't unique.</p>
+        <div class="bar-track"><div class="bar-fill" data-fill="82"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PROJECTS ============ -->
+  <section id="projects">
+    <p class="section-tag reveal">Portfolio</p>
+    <h2 class="section-title reveal">What I Built</h2>
+    <p class="section-intro reveal">
+      Five projects in ten weeks, each one a step up in complexity from the last.
+    </p>
+
+    <div class="projects-grid">
+      <div class="project reveal">
+        <span class="badge">Week 1 · First Build</span>
+        <h3>Personal Website</h3>
+        <p>My very first page — header, intro, and interests — built with AI's help, later upgraded with a responsive hamburger nav.</p>
+        <ul>
+          <li>First repo, commit, and push</li>
+          <li>Published with GitHub Pages</li>
+        </ul>
+        <a href="https://jordanhurd11.github.io" target="_blank" rel="noopener noreferrer">Visit site →</a>
+      </div>
+
+      <div class="project reveal">
+        <span class="badge">MP1 · Weeks 3–4</span>
+        <h3>FuelPrep</h3>
+        <p>A meal-prep landing site for college students on a budget, rebuilt from a PRD I wrote myself.</p>
+        <ul>
+          <li>3 pages with consistent navigation</li>
+          <li>Lead form saving to localStorage</li>
+          <li>Semantic HTML &amp; accessibility pass</li>
+          <li>Custom favicon + Open Graph tags</li>
+        </ul>
+        <a href="https://jordanhurd11.github.io/meal-creator/" target="_blank" rel="noopener noreferrer">Visit site →</a>
+      </div>
+
+      <div class="project reveal">
+        <span class="badge">MP2 · Weeks 5–6</span>
+        <h3>Workout Tracker</h3>
+        <p>My biggest vanilla-JS build: full workout sessions with set-by-set logging, all client-side on GitHub Pages.</p>
+        <ul>
+          <li>Custom Canvas radar chart — no libraries</li>
+          <li>Dashboard, calendar, achievements, stats</li>
+          <li>Epley 1RM personal records</li>
+          <li>Research-based weekly volume targets</li>
+        </ul>
+        <a href="https://jordanhurd11.github.io/workout-tracker/" target="_blank" rel="noopener noreferrer">Visit site →</a>
+      </div>
+
+      <div class="project reveal">
+        <span class="badge">MP3 · Weeks 7–8</span>
+        <h3>Golf Course Finder</h3>
+        <p>Search real golf courses anywhere using the Overpass API, with geocoding chained into course lookup.</p>
+        <ul>
+          <li>Favorites, distance sort, "near me"</li>
+          <li>Handles rate limits, errors, denied location</li>
+          <li>Request IDs to beat stale-response races</li>
+        </ul>
+        <a href="https://jordanhurd11.github.io/golf/" target="_blank" rel="noopener noreferrer">Visit site →</a>
+      </div>
+
+      <div class="project reveal">
+        <span class="badge">Final · Weeks 9–10</span>
+        <h3>Sports Analyst</h3>
+        <p>A sports betting analyzer — pivoted from my original idea after peer feedback — deployed on Vercel to keep API keys safe.</p>
+        <ul>
+          <li>Live data: balldontlie + ESPN APIs</li>
+          <li>Gemini AI analyst with model fallback</li>
+          <li>Bet tracker, bet slip, odds movement</li>
+          <li>Team stats, injuries, betting trends</li>
+        </ul>
+        <a href="https://sports-analyst-three.vercel.app/" target="_blank" rel="noopener noreferrer">Visit site →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BEFORE / AFTER ============ -->
+  <section id="growth">
+    <p class="section-tag reveal">Growth</p>
+    <h2 class="section-title reveal">Before &amp; After</h2>
+    <p class="section-intro reveal">
+      The clearest way to see the change is to put Week 1 me next to Week 10 me.
+    </p>
+
+    <div class="ba-grid">
+      <div class="ba-col before reveal">
+        <h3>Week 1 Me</h3>
+        <p class="when">May 2026</p>
+        <ul>
+          <li>Kept <strong>100%</strong> of whatever code AI handed me</li>
+          <li>Asked what <strong>meta</strong>, <strong>charset</strong>, and <strong>rem</strong> meant</li>
+          <li>One HTML file with everything inside it</li>
+          <li>Thought commit and push were just magic words</li>
+          <li>Couldn't tell if AI's code was right or wrong</li>
+        </ul>
+      </div>
+      <div class="ba-col after reveal">
+        <h3>Week 10 Me</h3>
+        <p class="when">July 2026</p>
+        <ul>
+          <li>Writes <strong>PRDs and phased plans</strong> before any code</li>
+          <li>Catches AI's bugs: typos, race conditions, retired model names, UTC shifts</li>
+          <li>Architects <strong>multi-page apps</strong> with shared state and multiple APIs</li>
+          <li>Runs <strong>git status before every push</strong> to protect API keys</li>
+          <li>Checks AI's math and cross-tests different models on the same code</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="quote-shift reveal">
+      <blockquote>
+        "What does meta mean? What does rem mean in relation to font size?"
+        <span>My questions · Week 1</span>
+      </blockquote>
+      <div class="arrow" aria-hidden="true">→</div>
+      <blockquote>
+        "How do I have multiple AIs do the same task and then vote on which one did it best?"
+        <span>My questions · Week 10</span>
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- ============ REFLECTION ============ -->
+  <section id="reflection">
+    <p class="section-tag reveal">Final Thoughts</p>
+    <h2 class="section-title reveal">Reflection</h2>
+
+    <div class="reflection-card reveal">
+      <p>
+        Looking back at my logs, the thing that changed most wasn't my code — it was the
+        <strong>"What I kept / changed / rejected"</strong> line at the bottom of every AI interaction.
+        For the first month it said the same thing over and over: kept everything, kept all, kept all code.
+        I wasn't lying. I genuinely had no basis to change anything.
+      </p>
+      <p>
+        The turning point was Week 5, when the AI built my workout tracker and workouts silently
+        weren't saving. Nobody was going to fix that for me. Digging into the code to find out why was
+        frustrating, but it taught me more than any working feature had. From then on, the pattern in my
+        logs flips — every week has a bug <strong>I</strong> found and a fix <strong>I</strong> made:
+        a typo in a function name, a CSS rule beating the hidden attribute, two teams sharing colors,
+        a retired AI model name, games showing on the wrong day because of UTC.
+      </p>
+      <p>
+        The other big shift was learning that <strong>a website is a system that holds data, transforms it,
+        and redraws itself</strong>. Once that clicked in Week 6, everything stopped feeling like separate
+        tricks and started feeling like one machine I could reason about. That's also when my prompts changed —
+        from "make the background light blue" to full PRDs with data structures, formulas, and edge cases spelled out.
+      </p>
+      <p>
+        I came into this class thinking AI would write websites for me. What I actually learned is harder
+        and more useful: how to plan a product, direct AI with precision, verify what it produces, and fix
+        it when it's wrong. The pivot in Week 9 taught me not to be precious about ideas, and shipping the
+        final project taught me that the last stretch — error states, rate limits, key security, time zones —
+        is where the real work is. Ten weeks ago I couldn't have told you what a meta tag was.
+        Now I want to build systems where multiple AIs check each other's work. That gap is the journey.
+      </p>
+      <p class="sig">Jordan Hurd <span>OIM3690 · Web Technologies · Summer 2026 · Babson College</span></p>
+    </div>
+  </section>
+
+  <footer>
+    <p>Built with vanilla HTML, CSS &amp; JavaScript — every fact on this page comes from my weekly logs.</p>
+  </footer>
+
+  <script>
+    // Safety net for very old browsers: show everything if IntersectionObserver is missing
+    if (!('IntersectionObserver' in window)) {
+      document.querySelectorAll('.reveal').forEach((el) => el.classList.add('visible'));
+      document.querySelectorAll('.bar-fill').forEach((b) => { b.style.width = b.dataset.fill + '%'; });
+    }
+
+    // ---------- Scroll reveal ----------
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal').forEach((el) => revealObserver.observe(el));
+
+    // ---------- Interactive timeline (click to expand) ----------
+    document.querySelectorAll('.tl-head').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const entry = btn.closest('.tl-entry');
+        const body = entry.querySelector('.tl-body');
+        const isOpen = entry.classList.toggle('open');
+        btn.setAttribute('aria-expanded', isOpen);
+        body.style.maxHeight = isOpen ? body.scrollHeight + 'px' : '0px';
+      });
+    });
+
+    // ---------- Skill bars animate when visible ----------
+    const barObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const fill = entry.target.querySelector('.bar-fill');
+          fill.style.width = fill.dataset.fill + '%';
+          barObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.4 });
+
+    document.querySelectorAll('.skill').forEach((el) => barObserver.observe(el));
+
+    // ---------- Hero stat counters ----------
+    function animateCount(el) {
+      const target = parseInt(el.dataset.count, 10);
+      const duration = 1400;
+      const start = performance.now();
+      function tick(now) {
+        const progress = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.round(eased * target);
+        if (progress < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+    document.querySelectorAll('.stat .num').forEach(animateCount);
+
+    // ---------- Active nav link on scroll ----------
+    const navLinks = document.querySelectorAll('nav a');
+    const sections = [...navLinks].map((a) => document.querySelector(a.getAttribute('href')));
+
+    const navObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          navLinks.forEach((a) => a.classList.toggle('active', a.getAttribute('href') === '#' + entry.target.id));
+        }
+      });
+    }, { rootMargin: '-40% 0px -55% 0px' });
+
+    sections.forEach((s) => { if (s) navObserver.observe(s); });
+  </script>
+
+</body>
+</html>
